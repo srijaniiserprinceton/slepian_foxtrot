@@ -28,7 +28,7 @@ function varargout=svdslep(N,NW,K,method,imp)
 %
 % svdslep('demo1')
 % 
-% Last modified by fjsimons-at-alum.mit.edu, 06/21/2010
+% Last modified by fjsimons-at-alum.mit.edu, 02/19/2020
 
 % See some notes in RB VIII p 90
 
@@ -224,7 +224,7 @@ elseif strcmp(N,'demo1')
     SE2=indeks(abs(fft(E2(:,ind),8*length(E2)).^2),selekt);
 
     axes(ah(ind))
-    plot(E(:,ind),'b','linew',2); hold on
+    plot(E(:,ind),'b','LineWidth',2); hold on
     plot(E2(:,ind),'y')
     
     disp(sprintf('Eigenfunction %i: rms %8.3f%s',ind,...
@@ -237,7 +237,7 @@ elseif strcmp(N,'demo1')
     xlabel(sprintf('%s = %12.9f (EIGS)','\lambda',V(ind)))
     
     axes(ha(2*ind))
-    plot(N*fax,decibel(SE(:,ind)),'b','linew',2); hold on
+    plot(N*fax,decibel(SE(:,ind)),'b','LineWidth',2); hold on
     plot(N*fax,decibel(SE2),'y');
     plot(N*[NW/N NW/N],yls,'k-');
     plot(-N*[NW/N NW/N],yls,'k-');
