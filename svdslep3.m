@@ -32,7 +32,7 @@ function varargout=svdslep3(XY,KXY,K,tol,ngro)
 %
 % LOCALIZATION2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 05/26/2011
+% Last modified by fjsimons-at-alum.mit.edu, 05/27/2011
 
 % Default values
 defval('K', 10);
