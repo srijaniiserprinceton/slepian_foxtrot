@@ -1,7 +1,7 @@
 function swfried2d(method)
 % swfried2d(method)
 %
-% FIGURE 3.4 of SIMONS & WANG
+% FIGURE 4 of SIMONS & WANG, GEM 2011
 %
 % INPUT:
 %
@@ -20,7 +20,7 @@ function swfried2d(method)
 %
 % SWVALS2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 06/15/2010
+% Last modified by fjsimons-at-alum.mit.edu, 03/03/2011
 
 % eps2png -width 850 swfried2d.eps 
 % convert swfried2d.png swfried2d.gif
@@ -75,7 +75,6 @@ switch method
     [E{m+1},EV{m+1}]=swdisk(m,N,ceil(Nm(m+1)),[],Rx,'SE',0);
     EM{m+1}=repmat(m,1,ceil(Nm(m+1)));
   end
-  keyboard
   % Sort them all and compare eigenfunctions with the same eigenvalue
   E=[E{:}]; EV=[EV{:}]; EM=[EM{:}];
   [EV,i]=sort(EV,'descend'); E=E(:,i); EM=EM(i);
@@ -84,12 +83,14 @@ switch method
   % The indexing sequence in the non-repeated vectors
   seq=indeks(gamini(1:length(EV),dbl),1:J);
   % This will change the sine into the cosine later
-  addph=~diff([0 seq]);
+  % If there is no difference, it is a pair
+  addph=~diff([0 seq]); 
   % Make the eigenvalue sequence with the repeats
   EV=indeks(gamini(EV,dbl),1:J);
   % Reassemble and combine with the sine/cosine functions
   GV=nan(size(R,1),size(R,2),J);
   for i=1:length(EV)
+    % Just leave it here - it's the GL that is in trouble
     GV(:,:,i)=reshape(E(jR,seq(i)),size(R)).*...
 	      cos(EM(seq(i)).*TH-addph(i)*pi/2);
   end
@@ -99,14 +100,14 @@ switch method
   theG=GV;
   theV=EV;
  case 'compare'
-  keyboard 
+  keyboard
   % Not properly written but largely irrelevant now
   % Check how close these eigenvalues are now
   difer(EV-V,4)
+  % Also compare the eigenfunctions and make sure that the normalization
+  % is identical in both cases.
 end
   
-keyboard
-
 % They should differ slightly - in the sign - in the phase
 clf
 [ah,ha,H]=krijetem(subnum(6,5));
@@ -114,23 +115,36 @@ clf
 c11=[min(XYP(:,1)) max(XYP(:,2))];
 cmn=[max(XYP(:,1)) min(XYP(:,1))];
 
+defval('bw',1)
+
 for index=1:length(ah)
   axes(ah(index))
   % Check if the color saturation is appropriate
-  imagefnan(c11,cmn,setnans(theG(:,:,index)),kelicol,[-1 1])
+  if bw==1
+    imagefnan(c11,cmn,setnans(theG(:,:,index)),gray(21),[-1 1],grey(5))
+  else
+    imagefnan(c11,cmn,setnans(theG(:,:,index)),kelicol,[-1 1])
+  end
   hold on
   % Plot the circle
   plot(XY(:,1),XY(:,2),'k--')
   % Plot the square
   plot(c11([1 2 2 1 1]),cmn([1 1 2 2 1]),'k-')
-  tl(index)=title(sprintf('%s_{%i} = %9.6f','\lambda',index,theV(index)));
+  switch method
+   case {'GL','RS'}
+    tl(index)=title(sprintf('%s_{%i} = %9.6f','\lambda',...
+			    index,theV(index)));
+   case 'SE'
+    tl(index)=title(sprintf('%s_{%i} = %9.6f ; m = %i',...
+			    '\lambda',...
+			    index,theV(index),...
+			    (-1).^[addph(index)-1]*EM(seq(index))));
+  end
   axis off
   drawnow
 end
 
-keyboard
-
-% Cosmetics (best after KEYBOARD)
+% Cosmetics (best after KEYBOARD and manually line by line)
 movev(tl,-0.3)
 set(tl,'FontS',8)
 serre(H',[],'down')
