@@ -27,9 +27,46 @@ function [D,V,g,c,N,A,D2,V2,g2]=devilliers(m,N,K,L)
 %
 % SEE ALSO: SWDISK
 % 
-% Last modified by fjsimons-at-alum.mit.edu, 03/04/2013
 % Last modified by dongwang-at-princeton.edu, 08/06/2008
-
+% Last modified by fjsimons-at-alum.mit.edu, 06/29/2018
+%
+% NOTES:
+%
+% @Article{DeVilliers+2003,
+%  author = 	 {G. D. de Villiers and F. B. T. Marchaud and E. R. Pike},
+%  title = 	 {Generalized {G}aussian quadrature applied to an
+%                  inverse problem in antenna theory: {II.} {T}he
+%                  two-dimensional case with circular symmetry},
+%   journal = 	 IP,
+%   year = 	 2003,
+%   volume =	 19,
+%   pages =	 {755--778, doi: 10.1088/0266-5611/19/3/317}
+% }
+%
+% @Article{Shkolnisky2007,
+%   author =	 {Yoel Shkolnisky},
+%   title =	 {Prolate spheroidal wave functions on a disc ---
+%                   {I}ntegration and approximation of two-dimensional
+%                   bandlimited functions},
+%   journal =	 ACHA,
+%   year =	 2007,
+%   volume =	 22,
+%   pages =	 {235--256, doi: 10.1016/j.acha.2006.07.002}
+% }
+%
+% @Article{Slepian64,
+%   author = 	 {David Slepian},
+%   title = 	 {Prolate Spheroidal Wave Functions, {F}ourier
+%                   analysis and Uncertainty --- {IV}: {E}xtensions to
+%                   many dimensions; generalized prolate spheroidal
+%                   functions}, 
+%   journal = 	 {Bell Syst.~Tech.~J.},
+%   year = 	 1964,
+%   volume =	 43,
+%   number =	 6,
+%   pages =	 {3009--3057, doi: 10.1002/j.1538-7305.1964.tb01037.x}
+% }
+%
 % This is probably equivalent to the three-term recursion of Slepian
 % (1964). See also Shkolnisky (2007) and Xiao (2001) for the m=1/2
 % case, i.e. for the "regular" one-dimensional prolate spheroidals.
@@ -51,9 +88,12 @@ k=0:L; kk=0:L-1;
 
 % Make the sub, main and superdiagonal
 warning off MATLAB:divideByZero
+% Eq. (52) in doi: 10.1088/0266-5611/19/3/317
 ldiag=-c^2*(m+kk+1).^2./(2*kk+m+1)./(2*kk+m+2);
+% Eq. (50) in doi: 10.1088/0266-5611/19/3/317
 ondiag=(2*k+m+1/2).*(2*k+m+3/2)+...
        c^2/2*(1+m^2./(2*k+m)./(2*k+m+2));
+% Eq. (51) in doi: 10.1088/0266-5611/19/3/317
 udiag=-c^2*(  kk+1).^2./(2*kk+m+2)./(2*kk+m+3);
 warning on MATLAB:divideByZero
 
@@ -61,6 +101,7 @@ warning on MATLAB:divideByZero
 A=tridiag(ldiag,ondiag,udiag);
 
 % Now for the symmetric variety. Common form for both diagonals
+% doi: 10.1016/j.acha.2006.07.002
 uldiag=-c^2*(kk+1).*(m+kk+1)./sqrt(2*kk+m+1)./(2*kk+m+2)./sqrt(2*kk+m+3);
 % And notice that A and AA and AAA have the same eigenvalues! But now, how do the
 % eigenvectors scale? 
@@ -99,7 +140,8 @@ end
 [v,i]=sort(diag(v)); D=D(:,i);
 
 % The rows of D are the degrees l, the columns the rank of the function
-% Now find the concentration eigenvalues as per Slepian (1964) eq. 46
+% Now find the concentration eigenvalues as per
+% Eq. (46) in 10.1002/j.1538-7305.1964.tb01037.x
 g=c^(m+1/2)*D(1,1:K)./2^(m+1)./factorial(m+1)./sum(D(:,1:K),1);
 V=g.^2*c;
 g2=c^(m+1/2)*D2(1,1:K)./2^(m+1)./factorial(m+1)./sum(D2(:,1:K),1);
