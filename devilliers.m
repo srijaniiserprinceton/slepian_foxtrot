@@ -28,7 +28,7 @@ function [D,V,g,c,N,A,D2,V2,g2]=devilliers(m,N,K,L)
 % SEE ALSO: SWDISK
 % 
 % Last modified by dongwang-at-princeton.edu, 08/06/2008
-% Last modified by fjsimons-at-alum.mit.edu, 06/29/2018
+% Last modified by fjsimons-at-alum.mit.edu, 06/30/2018
 %
 % NOTES:
 %
