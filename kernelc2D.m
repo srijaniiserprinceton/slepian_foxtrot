@@ -21,7 +21,7 @@ function D=kernelc2D(XY,XYP,K)
 % LOCALIZATION2D
 %
 % Last modified by dongwang-at-princeton.edu, 02/22/2008
-% Last modified by fjsimons-at-alum.mit.edu, 10/07/2008
+% Last modified by fjsimons-at-alum.mit.edu, 10/08/2008
 
 t0=clock;
 % Make all the required combinations, i.e. the pairs of the unwrapped
