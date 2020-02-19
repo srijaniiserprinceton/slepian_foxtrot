@@ -35,7 +35,7 @@ function varargout=svdslep2(N,R,K,method,imp)
 % speed differences.)
 %
 % Written by Eugene Brevdo and Frederik J Simons, 04/03/2010
-% Last modified by fjsimons-at-alum.mit.edu, 02/19/2020
+% Last modified by fjsimons-at-alum.mit.edu, 02/18/2020
 
 % Default values
 defval('N',2^6)
