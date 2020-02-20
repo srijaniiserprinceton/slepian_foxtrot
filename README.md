@@ -7,5 +7,5 @@ which you may cite if you find any of these routines useful!
 Supported by the National Science Foundation under grant <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=0710860">EAR-0710860</a>.
 
 ## Latest release
-[![DOI](https://zenodo.org/badge/64203409.svg)](https://zenodo.org/badge/latestdoi/64203409)
+[![DOI](https://zenodo.org/badge/6548/csdms-contrib/slepian_foxtrot.svg)](https://zenodo.org/badge/latestdoi/6548/csdms-contrib/slepian_foxtrot)
 
