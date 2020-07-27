@@ -3,7 +3,8 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 % 
 % Calculates spatiospectrally concentrated Slepian functions in the
 % two-dimensional Cartesian plane at the desired spatial points, for an
-% abitrarily shaped region. These are windows to be applied to certain
+% arbitrarily shaped region in space, and for circular bandlimitation as per
+% the specified Shannon number. These are windows to be applied to certain
 % data of which you know the specific coordinates or the x and y
 % spacings. If you don't, put in a reasonable sampling interval in km.
 %
@@ -44,14 +45,14 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 % localization2D('demo4',[],[],'GL');
 % localization2D('demo5') % Compare eigenvalues for circle
 % localization2D('demo6') % Compare eigenvalues for blob
-% localization2D('demo7') % For a square
+% localization2D('demo7') % For a square in space
 %
 % SEE ALSO:
 %
 % SWDISK, KERNELC2D, LOCALIZATION, KERNELC, DEVILLIERS
 %
 % Last modified by dongwang-at-princeton.edu, 05/14/2010
-% Last modified by fjsimons-at-alum.mit.edu, 06/17/2010
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2020
 
 % Supply defaults - make sure to hit the diameter exactly
 defval('circn',41)
@@ -79,7 +80,8 @@ if ~isstr(XY)
 
   % Should be roughly compatible with the resolution of the curve but
   % let's say we're going to assume units of km coming in - thus 5 km.
-  % Got to change this if you're not happy! But too low and you might be waiting a long while 
+  % Got to change this if you're not happy! But too low and you might be
+  % waiting a long while...
   defval('dxdy',[5 5]/100)
   disp(sprintf('Resolution %gx%g',dxdy(1),dxdy(2)))
 
@@ -317,7 +319,7 @@ elseif strcmp(XY,'demo2')
 elseif strcmp(XY,'demo3')
   defval('method','RS')
   % Get the functions on the inscribed data grid
-  [G1,H1,V1,K1,XYP1,XY]=localization2D([],[],method);
+  [G1,H1,V1,K1,XYP1,XY]=localization2D([],[],[],method);
   % Now find somewhere specific
   wheir=round(size(XYP1,1)/2);
   wheir=ceil(rand*size(XYP1,1));
@@ -367,13 +369,13 @@ elseif strcmp(XY,'demo7')
   N=5;
   % Number of tapers required
   J=1;
-  % Calculate just one taper of size 129*129
+  % Calculate J tapers of size 129*129
   [G1,H1,V1]=localization2D(XY,N,J,'GL',[],[],[2 2]/129);
   % Then take the interior points of H1 and you have a space-limited
   % taper with the right Shannon number on the right domain
   % Should rewrite to suggest extraction indices
   H1=H1(65:194,65:194);
-  ah(1)=subplot(221)
+  ah(1)=subplot(221);
   imagesc(H1); axis image;
   title('H_1')
   ah(2)=subplot(222);
@@ -411,6 +413,7 @@ for index=1:size(G,3)
   hold on; plot(XY(:,1),XY(:,2),'k'); hold off
   xl(1)=ylabel('x');
   yl(1)=ylabel('y');
+  title('bandlimited space-concentrated G')
   % Plot of the spacelimited band-concentrated functions H
   ah(2)=subplot(2,2,2);
     imagefnan([xmins(1) ymins(1)],[xmins(2) ymins(2)],H(:,:,index)); 
@@ -418,18 +421,21 @@ for index=1:size(G,3)
   hold on; plot(XY(:,1),XY(:,2),'k'); hold off
   xl(2)=ylabel('x');
   yl(2)=ylabel('y');
+  title('bandlimited space-concentrated H')
   % Plot of the power of G
   ah(3)=subplot(2,2,3);
-  imagesc(abs(fftshift(fft2(G(:,:,index)))).^2); 
+  imagesc(decibel(abs(fftshift(fft2(G(:,:,index)))).^2)); 
   axis image
   xl(3)=ylabel('k_x');
   yl(3)=ylabel('k_y');
+  title('power spectrum of G')
   % Plot of the power of H
   ah(4)=subplot(2,2,4);
-  imagesc(abs(fftshift(fft2(H(:,:,index)))).^2); 
+  imagesc(decibel(abs(fftshift(fft2(H(:,:,index)))).^2)); 
   axis image
   xl(4)=ylabel('k_x');
   yl(4)=ylabel('k_y');
+  title('power spectrum of H')
   % title(sprintf(...
   %     'j = %i ; V = %8.3f ; min(|G|) = %8.3e ; max(|G|) = %8.3e',...
   %     index,V(index),min(min(abs(G(:,:,index)))),...
