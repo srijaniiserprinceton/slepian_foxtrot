@@ -46,6 +46,7 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 % localization2D('demo5') % Compare eigenvalues for circle
 % localization2D('demo6') % Compare eigenvalues for blob
 % localization2D('demo7') % For a square in space
+% localization2D('demo8') % For a square in space, different tack
 %
 % SEE ALSO:
 %
@@ -366,37 +367,58 @@ elseif strcmp(XY,'demo7')
   WAI=[top  bottom bottom top   top ]';
   XY=[EKS(:) WAI(:)];
   % Shannon number
+  N=19;
+  % Number of tapers required
+  J=9;
+  % Calculate J tapers of size 129*129 ; I like the looks of H for 9/9
+  [G1,H1,V1,K1,XYP1,XY1]=localization2D(XY,N,J,'GL',[],[],[2 2]/129);
+  demoplots1(G1,H1,V1,K1,XYP1,XY1)
+elseif strcmp(XY,'demo8')
+  % For a square patch
+  lrtb=[-1 1 1 -1];
+  [left,right,top,bottom]=deal(lrtb(1),lrtb(2),lrtb(3),lrtb(4));
+  EKS=[left left   right  right left]';
+  WAI=[top  bottom bottom top   top ]';
+  XY=[EKS(:) WAI(:)];
+  % Shannon number
   N=5;
   % Number of tapers required
   J=1;
   % Calculate J tapers of size 129*129
-  [G1,H1,V1]=localization2D(XY,N,J,'GL',[],[],[2 2]/129);
+  [G1,H1,V1,K1,XYP1,XY1]=localization2D(XY,N,J,'GL',[],[],[2 2]/129);
+ 
   % Then take the interior points of H1 and you have a space-limited
   % taper with the right Shannon number on the right domain
   % Should rewrite to suggest extraction indices
   H1=H1(65:194,65:194);
+
   ah(1)=subplot(221);
-  imagesc(H1); axis image;
-  title('H_1')
-  ah(2)=subplot(222);
   imagesc(G1); axis image
   title('G_1')
-  shrink(ah(1),2,2)
+
+  ah(2)=subplot(222);
+  imagesc(H1); axis image;
+  title('H_1')
+  shrink(ah(2),2,2)
+
   ah(3)=subplot(223);
-  imagesc(decibel(fftshift(abs(fft2(H1,size(G1,1),size(G1,2)))).^2))
-  caxis([-50 0]); axis image
-  ah(4)=subplot(224);
   imagesc(decibel(fftshift(abs(fft2(G1))).^2)); 
   caxis([-50 0]); axis image
-  % Compare with Slepian
-  [E,V]=dpss(129,1.15,1); [V^2 V1]
-  EE=E(:,1)*E(:,1)';
-  imagesc(decibel(fftshift(abs(fft2(EE,size(G1,1),size(G1,2)))).^2))
+
+  ah(4)=subplot(224);
+  imagesc(decibel(fftshift(abs(fft2(H1,size(G1,1),size(G1,2)))).^2))
   caxis([-50 0]); axis image
+  % Compare with outer producs of Slepian in 1D
+  %[E,V]=dpss(129,1.15,1); [V^2 V1]
+  %EE=E(:,1)*E(:,1)';
+  %imagesc(decibel(fftshift(abs(fft2(EE,size(G1,1),size(G1,2)))).^2))
+  %caxis([-50 0]); axis image
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function demoplots1(G,H,V,K,XYP,XY)
+function demoplots1(G,H,V,K,XYP,XY,lilo)
+% Decibel (log, 2) plot or not (1)
+defval('lilo',2)
 clf
 % Watch for centers in plotting!!
 for index=1:size(G,3)
@@ -424,14 +446,22 @@ for index=1:size(G,3)
   title('bandlimited space-concentrated H')
   % Plot of the power of G
   ah(3)=subplot(2,2,3);
-  imagesc(decibel(abs(fftshift(fft2(G(:,:,index)))).^2)); 
+  if lilo==2
+    imagesc(decibel(abs(fftshift(fft2(G(:,:,index)))).^2)); 
+  else
+    imagesc(abs(fftshift(fft2(G(:,:,index)))).^2); 
+  end
   axis image
   xl(3)=ylabel('k_x');
   yl(3)=ylabel('k_y');
   title('power spectrum of G')
   % Plot of the power of H
   ah(4)=subplot(2,2,4);
-  imagesc(decibel(abs(fftshift(fft2(H(:,:,index)))).^2)); 
+  if lilo==2
+    imagesc(decibel(abs(fftshift(fft2(H(:,:,index)))).^2)); 
+  else
+    imagesc(abs(fftshift(fft2(H(:,:,index)))).^2); 
+  end
   axis image
   xl(4)=ylabel('k_x');
   yl(4)=ylabel('k_y');
@@ -445,6 +475,7 @@ for index=1:size(G,3)
   nolabels(ah(2),2); delete(yl(2))
   nolabels(ah(4),2); delete(yl(4))
   longticks(ah)
+  disp(sprintf('That was taper %i eigenvalue %f',index,V(index)))
   pause
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
