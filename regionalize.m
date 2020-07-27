@@ -15,9 +15,9 @@ function regionalize(regi)
 % Last modified by fjsimons-at-alum.mit.edu, 3/2/2011
 %
 % Previously known as: make_region_world_1, make_region_Africa_1,
-% make_region_SouthAmerica_1.m 
+% make_region_SouthAmerica_1.m, etc...
 
-% Where is the data kept or stored?
+% Where are the data kept or stored?
 worldir=fullfile(getenv('IFILES'),'GEOLOGY','WORLD');
 % What is the Matlab version of this?
 allfname=fullfile(worldir,'WORLDGeol1.mat');
@@ -40,6 +40,7 @@ if exist(fname,'file')~=2
     end
 
     % Data source
+    webaddress='https://certmapper.cr.usgs.gov/data/wep/dds60/wep_prvg.htm';
     bigweb='http://certmapper.cr.usgs.gov';
     docId='F75EF7E7-963B-413A-9539-BCA88D755B01';
     src1=sprintf('[1] %s/data/we/dds60/spatial/shape/wep_prvg.zip',bigweb);
