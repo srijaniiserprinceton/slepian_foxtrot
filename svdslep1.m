@@ -1,5 +1,5 @@
-function varargout=svdslep(N,NW,K,method,imp)
-% [E,V,SE,ngro]=SVDSLEP(N,NW,K,method,imp)
+function varargout=svdslep1(N,NW,K,method,imp)
+% [E,V,SE,ngro,]=SVDSLEP1(N,NW,K,method,imp)
 %
 % Explicit diagonalization of the Slepian concentration operators 
 % in one linear dimension.  
@@ -26,7 +26,7 @@ function varargout=svdslep(N,NW,K,method,imp)
 %
 % EXAMPLE:
 %
-% svdslep('demo1')
+% svdslep1('demo1')
 % 
 % Last modified by fjsimons-at-alum.mit.edu, 02/19/2020
 
@@ -193,7 +193,7 @@ if ~isstr(N)
   varns={E,V,SE,ngro};
   varargout=varns(1:nargout);
 elseif strcmp(N,'demo1')
-  % So you can say svdslep('demo1',1)
+  % So you can say svdslep1('demo1',1)
   defval('NW',[])
   imp=NW;
   defval('imp',1)
@@ -202,7 +202,7 @@ elseif strcmp(N,'demo1')
   N=2^8; NW=3;
   method=1;
   disp(sprintf('\nN = %i , NW = %i\n',N,NW))
-  [E,V,SE,ngro]=svdslep(N,NW,max(3,2*NW),method,imp);
+  [E,V,SE,ngro]=svdslep1(N,NW,max(3,2*NW),method,imp);
   % Compare with Matlab's built-in functions
   [E2,V2]=dpss(N,NW,max(3,2*NW));
   
@@ -260,7 +260,7 @@ elseif strcmp(N,'demo1')
   longticks(ah)
   
   tt=supertit(ah(1:3),...
-	   sprintf('SVDSLEP vs DPSS on a %ix domain',ngro),12);
+	   sprintf('SVDSLEP1 vs DPSS on a %ix domain',ngro),12);
   movev(tt,0.15)
   fig2print(gcf,'landscape')
   
