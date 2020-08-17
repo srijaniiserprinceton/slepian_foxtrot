@@ -164,7 +164,6 @@ if ~isstr(N)
 
     % Take out only the central part
     E=E((Nd-N)/2+1:(Nd-N)/2+N,:);
-
     % Note that they were normalized in the complex plane
     E=real(E); E=E./repmat(diag(sqrt(E'*E))',size(E,1),1);
     % Cannot do abs(E).*sign(E) because the sign is bad for complex
