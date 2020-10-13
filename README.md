@@ -9,3 +9,4 @@ Supported by the National Science Foundation under grant <a href="https://www.ns
 ## Latest release
 [![DOI](https://zenodo.org/badge/6548/csdms-contrib/slepian_foxtrot.svg)](https://zenodo.org/badge/latestdoi/6548/csdms-contrib/slepian_foxtrot)
 
+[![View slepian_foxtrot on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/81111-slepian_foxtrot)
