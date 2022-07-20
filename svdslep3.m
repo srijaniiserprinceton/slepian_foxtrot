@@ -32,7 +32,7 @@ function varargout=svdslep3(XY,KXY,K,tol,ngro)
 %
 % LOCALIZATION2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 05/27/2011
+% Last modified by fjsimons-at-alum.mit.edu, 07/20/2022
 
 % Default values
 defval('K', 10);
@@ -224,7 +224,7 @@ elseif strcmp(XY,'demo1')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Qin,xylimt,QX,QY,XY]=ccheck(XY,delx,isk)
+function [Qin,xylimt,QX,QY,XY]=ccheck(XY,dxdy,isk)
 % The following is stripped quite literally from LOCALIZATION2D 
 
 defval('isk',0)
