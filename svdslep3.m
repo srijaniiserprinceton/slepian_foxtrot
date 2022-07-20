@@ -173,6 +173,10 @@ elseif strcmp(XY,'demo1')
   % Compute the eigenfunctions
   [E,V,c11cmnR,c11cmnK,SE,KXY]=svdslep3(XY,KXY,K);
   
+  % Quick fix
+  c11=[];
+  cmn=[];
+
   % Make the figure
   offs=0;
   figure(1)
