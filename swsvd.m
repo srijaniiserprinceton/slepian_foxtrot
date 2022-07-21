@@ -13,7 +13,7 @@ function swsvd(par,tol)
 %         3 Ozark plateaus
 % tol     abs(log10(tolerance)) for EIGS in SVDSLEP3 
 %
-% Last modified by fjsimons-at-alum.mit.edu, 03/03/2011
+% Last modified by fjsimons-at-alum.mit.edu, 07/21/2022
 
 % How many functions do you want?
 defval('J',20)
@@ -46,7 +46,7 @@ else
 	       sprintf('SWREG-%s-%i-%i.mat',names{par},N,J)));
   % We just want the area A and the outline XY
   clear G H V K XYP c11 cmn
-  
+
   % Define a localization interval in spectral space
   defval('R',300);
   % A half triangle in spectral space
@@ -59,10 +59,6 @@ else
   % Localize around the region with all the defaults
   [E1,V1,c11cmnR1,c11cmnK1,SE1,KXY1]=svdslep3(XY,KXY,J,tol,ngro);
   
-  % A half triangle in spectral space
-  KXY=sqrt(pi*(R/5)^2)/2*[0  1/2 -1/2 0;...
-    		          0  1  1 0]';
-
   % Clockwise rotation i the Fourier domain!
   rr=rotz(-pi/5);
   KXY=[rr(1:2,1:2)*KXY']';
@@ -116,15 +112,15 @@ upit=22.5;
 switch par
  case 1
   serre(H',2/3,'down')
-  set(ha(1:3*F-4),'xtick',[-500 0 500],'ytick',[-500 0 500])
+  set(ha(1:3*F-4),'XTick',[-500 0 500],'YTick',[-500 0 500])
  case 2
   serre(H',1,'down')
-  set(ha(1:3*F-4),'xtick',[-500 0 500],'ytick',[-400 0 400])
+  set(ha(1:3*F-4),'XTick',[-500 0 500],'YTick',[-400 0 400])
  case 3
   serre(H',1,'down')
 end
-set(ah([F 2*F]),'xtick',[-0.1 0 0.1]*xte,'xtickl',[-0.1 0 0.1],...
-		'ytick',[-0.1 0 0.1]*yte,'ytickl',[-0.1 0 0.1])
+set(ah([F 2*F]),'XTick',[-0.1 0 0.1]*xte,'XtickLabel',[-0.1 0 0.1],...
+		'YTick',[-0.1 0 0.1]*yte,'XtickLabel',[-0.1 0 0.1])
 sro=1.5;
 shrink(ah,1/sro,1/sro)
 movev(ah(1:F),0.03)
@@ -132,9 +128,9 @@ movev(tlb([F 2*F]),upit)
 moveh(ha(1:3*F-4),-0.02)
 nolabels(ah(1:F),1)
 nolabels(ha(3:3*F-4),2)
-set(ah([F 2*F]),'yaxisl','r')
+set(ah([F 2*F]),'YAxisLabel','r')
 longticks(H)
-set([tlb(~~tlb) xl(~~xl) yl(~~yl) ah(~~ah)],'FontS',12)
+set([tlb(~~tlb) xl(~~xl) yl(~~yl) ah(~~ah)],'FontSize',12)
 delete(xl(1:F))
 delete(yl(2:F-1))
 delete(yl(F+2:2*F-1))
