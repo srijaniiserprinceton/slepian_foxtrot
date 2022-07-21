@@ -120,7 +120,7 @@ switch par
   serre(H',1,'down')
 end
 set(ah([F 2*F]),'XTick',[-0.1 0 0.1]*xte,'XtickLabel',[-0.1 0 0.1],...
-		'YTick',[-0.1 0 0.1]*yte,'XtickLabel',[-0.1 0 0.1])
+		'YTick',[-0.1 0 0.1]*yte,'YtickLabel',[-0.1 0 0.1])
 sro=1.5;
 shrink(ah,1/sro,1/sro)
 movev(ah(1:F),0.03)
@@ -130,7 +130,9 @@ nolabels(ah(1:F),1)
 nolabels(ha(3:3*F-4),2)
 set(ah([F 2*F]),'YAxisLocation','r')
 longticks(H)
-set([tlb(~~tlb) xl(~~xl) yl(~~yl) ah(~~ah)],'FontSize',12)
+try
+  set([tlb(~~tlb) xl(~~xl) yl(~~yl) ah(~~ah)],'FontSize',12)
+end
 delete(xl(1:F))
 delete(yl(2:F-1))
 delete(yl(F+2:2*F-1))
