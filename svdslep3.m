@@ -1,5 +1,5 @@
-function varargout=svdslep3(XY,KXY,K,tol,ngro)
-% [E,V,c11cmnR,c11cmnK,SE,KXY]=SVDSLEP3(XY,KXY,K,tol,ngro)
+function varargout=svdslep3(XY,KXY,J,tol,ngro)
+% [E,V,c11cmnR,c11cmnK,SE,KXY]=SVDSLEP3(XY,KXY,J,tol,ngro)
 %
 % Two-dimensional Slepian functions with arbitrary concentration/limiting
 % regions in the Cartesian spatial and (half-)spectral domains.
@@ -11,7 +11,7 @@ function varargout=svdslep3(XY,KXY,K,tol,ngro)
 %          i.e. in the positive (including zero) halfplane!
 %          For various reasons the "curve" is not the boundary but rather
 %          the last set of "elements" on the "grid".
-% K        Number of eigentapers [default: 10]
+% J        Number of eigentapers [default: 10]
 % tol      abs(log10(tolerance)) for EIGS in SVDSLEP3 
 % ngro     The "growth factor" determining the size of the computation domain
 %
@@ -35,7 +35,7 @@ function varargout=svdslep3(XY,KXY,K,tol,ngro)
 % Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Default values
-defval('K', 10);
+defval('J', 10);
 defval('ngro',3);
 defval('xver',0);
 defval('tol',12);
@@ -126,10 +126,10 @@ if ~isstr(XY)
   OPTS.maxit=500;
 
   % Remember to specify the output size
-  [E,V]=eigs(H,prod(newsize),K,'LR',OPTS);
+  [E,V]=eigs(H,prod(newsize),J,'LR',OPTS);
   
   [V,i]=sort(diag(V),'descend');
-  E=E(:,i); V=V(1:K); E=E(:,1:K);
+  E=E(:,i); V=V(1:J); E=E(:,1:J);
 
   % Define some kind of tolerance level
   tol=sqrt(eps); 
@@ -171,10 +171,10 @@ elseif strcmp(XY,'demo1')
   rr=rotz(pi/5);
   KXY=[rr(1:2,1:2)*KXY']';
     
-  % How many eigenfunctions
-  K=40;
+  % How many eigenfunctions?
+  J=40;
   % Compute the eigenfunctions
-  [E,V,c11cmnR,c11cmnK,SE,KXY]=svdslep3(XY,KXY,K);
+  [E,V,c11cmnR,c11cmnK,SE,KXY]=svdslep3(XY,KXY,J);
   
   % Quick fix
   c11=[];
