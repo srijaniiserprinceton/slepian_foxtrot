@@ -1,14 +1,15 @@
-function varargout=svdslep2(N,R,K,method,imp)
-% [E,V,SE]=SVDSLEP2(N,R,K,method,imp)
+function varargout=svdslep2(N,R,J,method,imp)
+% [E,V,SE]=SVDSLEP2(N,R,J,method,imp)
 %
-% Explicit diagonalization of the Slepian concentration operator
-% in two dimensions.  
+% Explicit/implicit diagonalization of the Slepian concentration operator in
+% two Cartesian dimensions, for square concentration regions in the SPATIAL
+% domain and circular bandlimitation regions in the SPECTRAL domain.
 %
 % INPUT:
 %
 % N       The length of one side of the domain [default: 2^4]
 % R       The Shannon ratio (of full frequency spectrum) [default: .1]
-% K       The number of eigenvectors [default: 10]
+% J       The number of eigenvectors [default: 10]
 % method  1 Using EIGS on the Hermitian form [default]
 %         2 Using EIG on the Hermitian form
 %         3 Using SVDS on the projection operator
@@ -30,19 +31,19 @@ function varargout=svdslep2(N,R,K,method,imp)
 % SEE ALSO: SVDSLEP3
 %
 % REMARKS: Stability remains a problem... even the results between the
-% sparse and the non-sparse explicit approaches are different in the
-% details (though with identical eigenvalues and with vast computation
-% speed differences.)
+% sparse and the non-sparse explicit approaches are different in the details
+% (though with identical eigenvalues and with vast computation speed
+% differences.)
 %
 % Written by Eugene Brevdo and Frederik J Simons, 04/03/2010
-% Last modified by fjsimons-at-alum.mit.edu, 02/18/2020
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Default values
 defval('N',2^6)
 
 if ~isstr(N)
   defval('R',.1);
-  defval('K', 10);
+  defval('J', 10);
   defval('method',1)
   defval('ngro',8);
   defval('imp',1);
@@ -61,7 +62,7 @@ if ~isstr(N)
     disp('Method reset to IMPLICIT')
   end
   
-  % Make the two-dimensional spatial projection operator...
+  % Make the two-dimensional SPATIAL projection operator...
   nonz=matranges(...
       repmat((Nd-N)/2*(Nd+1)+[1 N],N,1)'+repmat([0:Nd:Nd*(N-1)]',1,2)');
   if imp==0
@@ -83,7 +84,7 @@ if ~isstr(N)
     disp(sprintf('Implicit method embedded %ix\n',ngro))
   end
   
-  % Make the two-dimensional spectral projection operator...
+  % Make the two-dimensional SPECTRAL projection operator...
   if imp==0
     % The Fourier transform operator
     Q=sparse(dft2mtx(Nd)/Nd);
@@ -142,30 +143,30 @@ if ~isstr(N)
     OPTS.isreal=false;
     OPTS.disp=0;
     % Remember to specify the output size
-    [E,V]=eigs(H,Nd^2,K,'LR',OPTS);
+    [E,V]=eigs(H,Nd^2,J,'LR',OPTS);
     
     [V,i]=sort(diag(V),'descend');
-    E=E(:,i); V=V(1:K); E=E(:,1:K);
+    E=E(:,i); V=V(1:J); E=E(:,1:J);
   elseif imp==0
     % The eigenvector decomposition
     switch method
      case 1
       OPTS.disp=0;
-      [E,V]=eigs(H,K,'LR',OPTS);
+      [E,V]=eigs(H,J,'LR',OPTS);
       [V,i]=sort(diag(V),'descend');
-      E=E(:,i); V=V(1:K); E=E(:,1:K);
+      E=E(:,i); V=V(1:J); E=E(:,1:J);
      case 2   
       [E,V]=eig(H,'nobalance');
       [V,i]=sort(diag(V),'descend');
-      E=E(:,i); V=V(1:K); E=E(:,1:K);
+      E=E(:,i); V=V(1:J); E=E(:,1:J);
      case 3
-      [U,V,E]=svds(A,K);
+      [U,V,E]=svds(A,J);
       [V,i]=sort(diag(V).^2,'descend');
-      E=E(:,i); V=V(1:K); E=E(:,1:K);
+      E=E(:,i); V=V(1:J); E=E(:,1:J);
      case 4
       [U,V,E]=svd(A);
       [V,i]=sort(diag(V).^2,'descend');
-      E=E(:,i); V=V(1:K); E=E(:,1:K);
+      E=E(:,i); V=V(1:J); E=E(:,1:J);
      case 5
       Vi=1; Vj=2;
       E=rand(N,1);
@@ -227,16 +228,17 @@ if ~isstr(N)
   varns={E,V,SE,ngro};
   varargout=varns(1:nargout);
 elseif strcmp(N,'demo1')
-  % So you can say svdslep('demo1',1)
-  defval('R',[])
-  imp=R;
-  defval('imp',1)
-  
+  % So you can say:
+  % svdslep('demo1',1) % for the IMPLICIT method
+  % svdslep('demo1',0) % for the EXPLICIT method
+  % but if you don't specify anything it's IMPLICIT
+  defval('R',[]); imp=R; defval('imp',1)
+  % Force the size of the square in this example
   N=2^6;
   [E,V,SE,ngro]=svdslep2(N,[],[],[],imp);
 
-  % Check these out - with imp=0 get some funny degeneracies even for the
-  % square case!
+  % Check out these eigenvalues - with imp=0 get some funny degeneracies
+  % even for the square case!
   V
   
   clf
@@ -254,7 +256,6 @@ elseif strcmp(N,'demo1')
     axes(ha(2*ind))
     imagesc(decibel(v2s(SE(:,ind))))
     axis image
-
   end
   
   % Cosmetics
