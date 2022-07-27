@@ -1,13 +1,13 @@
 function varargout=svdslep3(XY,KXY,K,tol,ngro)
 % [E,V,c11cmnR,c11cmnK,SE,KXY]=SVDSLEP3(XY,KXY,K,tol,ngro)
 %
-% Two-dimensional Slepian functions with arbitrary concentration regions
-% in either domain
+% Two-dimensional Slepian functions with arbitrary concentration/limiting
+% regions in the Cartesian spatial and (half-)spectral domains.
 %
 % INPUT:
 %
-% XY       [X(:) Y(:)] coordinates of a spatial domain curve
-% KXY      [X(:) Y(:)] coordinates of a spectral domain halfcurve 
+% XY       [X(:) Y(:)] coordinates of a SPATIAL-domain curve
+% KXY      [X(:) Y(:)] coordinates of a SPECTRAL-domain half-curve 
 %          i.e. in the positive (including zero) halfplane!
 %          For various reasons the "curve" is not the boundary but rather
 %          the last set of "elements" on the "grid".
@@ -41,13 +41,16 @@ defval('xver',0);
 defval('tol',12);
 
 defval('circn',41)
-defval('R',300)
-% Default is a circle in space
+
+% Default is a circle in space - need to properly make sure R is a
+% Shannon ratio i.e. the radius of the concentration region in terms of
+% the Nyquist, see SWSVD
+defval('R',30)
 defval('XY',...
        R*[cos(linspace(0,2*pi,circn)) ; sin(linspace(0,2*pi,circn))]')
 % And a halfsquare in spectral space
 defval('KXY',...
-       sqrt(pi*(R/6)^2)/2*...
+       sqrt(pi*R^2)/2*...
        [-1 1  1 -1 -1; ...
 	 1 1  0  0  1]')
 
@@ -162,7 +165,7 @@ elseif strcmp(XY,'demo1')
   % A circle in space
   XY=R*[cos(linspace(0,2*pi,circn)) ; sin(linspace(0,2*pi,circn))]';
   % A half triangle in spectral space
-  KXY=sqrt(pi*(R/5)^2)/2*[0  1/2 -1/2 0;...
+  KXY=sqrt(pi*(R)^2)/2*[0  1/2 -1/2 0;...
     		          0  1  1 0]';
   % Clockwise rotation i the Fourier domain!
   rr=rotz(pi/5);
@@ -225,6 +228,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [Qin,xylimt,QX,QY,XY]=ccheck(XY,dxdy,isk)
+% I think this needs ngro acknowledged
 % The following is stripped quite literally from LOCALIZATION2D 
 
 defval('isk',0)
@@ -232,7 +236,11 @@ defval('isk',0)
 % Should be roughly compatible with the resolution of the curve but
 % let's say we're going to assume units of km coming in - thus 5 km.
 % Note that the solution is sensitive to the step and the domain size
-defval('dxdy',[5 5])
+if isk==0
+  defval('dxdy',[5 5])
+else
+  defval('dxdy',2*pi./[5 5])
+end
 
 % Make sure the XY of the curve has two columns
 if ~isempty(find(size(XY,2)==2))
