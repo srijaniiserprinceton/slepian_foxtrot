@@ -1,12 +1,14 @@
 function varargout=swdisk(m,N,K,L,x,method,scalem)
 % [E,V,Nm,c,x,E2]=SWDISK(m,N,K,L,x,method,scalem)
 %
-% Calculates the radial part of the Slepian functions concentrated to a
-% circular domain in Cartesian space. For comparison, can solve the
+% Calculates the RADIAL part of the single-order Slepian functions
+% concentrated to a circular domain in Cartesian space and bandlimited to
+% give a certain full-problem Shannon number. For comparison, can solve the
 % integral equation directly, and we can also compare with fully
-% two-dimensional methods using LOCALIZATION2D. Note that increasing L is
-% almost always a good idea. Remember the distinction between the overall
-% Shannon number N and the fixed-order Shannon number Nm, and see NSUBM.
+% two-dimensional methods using LOCALIZATION2D or SVDSLEP3, see the examples
+% in SWFRIED2D. Note that increasing L is almost always a good
+% idea. Remember the distinction between the overall Shannon number N and
+% the fixed-order Shannon number Nm, and see NSUBM.
 %
 % INPUT:
 %
@@ -19,7 +21,7 @@ function varargout=swdisk(m,N,K,L,x,method,scalem)
 %          If NaN only computes the eigenvalues
 % method   'DV' by the method of De Villiers
 %          'SE' by Slepian "extension" [default]
-%          'GL' by direct Gauss-Legendre integration
+%          'GL' by Gauss-Legendre integration of the single-order Bessel kernel
 % scalem   1 Scales the solution for weightless orthogonality [default]
 %          0 Scales the solution for orthogonality with weight x
 %
@@ -38,7 +40,7 @@ function varargout=swdisk(m,N,K,L,x,method,scalem)
 %
 % SEE ALSO:
 %
-% JACOBI, LOCALIZATION2D, KERNELC2D, DEVILLIERS
+% JACOBI, LOCALIZATION2D, KERNELC2D, DEVILLIERS, SVDSLEP3
 %
 % EXAMPLE:
 %
@@ -47,7 +49,7 @@ function varargout=swdisk(m,N,K,L,x,method,scalem)
 % TESTED ON 8.3.0.532 (R2014a)
 %
 % Last modified by dongwang-at-princeton.edu, 08/06/2008
-% Last modified by fjsimons-at-alum.mit.edu, 03/10/2017
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Supply defaults
 defval('m',3)
@@ -229,7 +231,7 @@ if ~isstr(m)
       Kint=sqrt(c)*besselj(m,cxxint).*repmat(xGL(:)',length(x),1);
     end
     
-    % Get eigenfunctions of the "symmetrized" kernel - note that Matlab
+    % Get eigenfunctions of the "symmetrized" kernel - note that MATLAB
     % may still consider them numerically asymmetric. And note that the
     % number of nodes appears to be a sensitive parameter.
     if K>=NGL-1 & K<=NGL
@@ -384,7 +386,7 @@ elseif strcmp(m,'demo1')
   title(sprintf('Misfit between different methods'))
   longticks(ah,2); delete(xl(1)); nolabels(ah(1),1)
   fig2print(gcf,'portrait')
-  figdisp
+  figdisp([],1)
   % Now list the eigenvalues
   format long ; sprintf('%.7e\n',V)
   format short
@@ -441,7 +443,7 @@ elseif strcmp(m,'demo4')
   plot([1 1],[-4 7],'k')
   grid on; hold off
   fig2print(gcf,'portrait'); 
-  figdisp([],5)
+  figdisp([],4)
 elseif strcmp(m,'demo5')
   % Slepian (1964), Figure 4b
   clf
@@ -459,7 +461,7 @@ elseif strcmp(m,'demo5')
   plot([1 1],[-4 7],'k')
   grid on; hold off
   fig2print(gcf,'portrait'); 
-  figdisp([],4)
+  figdisp([],5)
 elseif strcmp(m,'demo6')
   % Shkolnisky (2007), Figure 1
   N=(1/2).^2;
@@ -481,6 +483,7 @@ elseif strcmp(m,'demo6')
   title(sprintf('m = %i ; c = %g ; N = %g ; meth = %s',m,c,N,method))
   grid on
   fig2print(gcf,'portrait')
+  figdisp([],6)
 elseif strcmp(m,'demo7')
   % Shkolnisky (2007), Figure 2
   N=(10/2).^2;
@@ -505,6 +508,7 @@ elseif strcmp(m,'demo7')
   title(sprintf('Method %s',method))
   grid on
   fig2print(gcf,'portrait')
+  figdisp([],7)
 elseif strcmp(m,'demo8')
   % Shkolnisky (2007), Figure 3
   N=([0.1 1 10 100]/2).^2;
@@ -526,6 +530,7 @@ elseif strcmp(m,'demo8')
   title(sprintf('Method %s',method))
   grid on
   fig2print(gcf,'portrait')
+  figdisp([],8)
 elseif strcmp(m,'demo9')
   % Slepian (1964), Table 1
   N=([0.1 0.5 1 1.5 2 3 4 5 10]/2).^2;
@@ -666,6 +671,7 @@ elseif strcmp(m,'demo10')
   set(gca,'xtick',[0 1 2],'xgrid','on')
   %aha=nanmean(E3./E2);
   %plot(1:K,aha,'o-')
+  figdisp([],10)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
