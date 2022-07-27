@@ -53,7 +53,7 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 % SWDISK, KERNELC2D, LOCALIZATION, KERNELC, DEVILLIERS
 %
 % Last modified by dongwang-at-princeton.edu, 05/14/2010
-% Last modified by fjsimons-at-alum.mit.edu, 07/27/2020
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Supply defaults - make sure to hit the diameter exactly
 defval('circn',41)
