@@ -1,9 +1,8 @@
 function D=kernelc2D(XY,XYP,K)
 % D=KERNELC2D(XY,XYP,K)
 %
-% This function is used to calculate the two-dimensional Cartesian
-% spatiospectral concentration, i.e. Bessel, kernel.
-% See Simons and Wang, J. Geomathematics 2011, Eq. 54
+% Calculates the 2D Cartesian Slepian concentration (Bessel-1) kernel.
+% SIMONS & WANG, doi: 10.1007/s13137-011-0016-z, eq. (54c)
 %
 % INPUT:
 %
@@ -21,7 +20,7 @@ function D=kernelc2D(XY,XYP,K)
 % LOCALIZATION2D
 %
 % Last modified by dongwang-at-princeton.edu, 02/22/2008
-% Last modified by fjsimons-at-alum.mit.edu, 10/08/2008
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 t0=clock;
 % Make all the required combinations, i.e. the pairs of the unwrapped
@@ -34,6 +33,8 @@ md=sqrt((XX-XXP).^2+(YY-YYP).^2);
 
 % Calculate the actual kernel, but watch out for zero division
 % So - not actually a singular kernel, right?
+% Remember in full 2D this is at fixed order-1, as opposed to when the
+% radial functions are calculated at single orders m, see SWDISK
 warning off MATLAB:divideByZero
 D=K*besselj(1,K*md)/2/pi./md;
 warning on MATLAB:divideByZero
