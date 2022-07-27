@@ -1,7 +1,7 @@
 function swspectral2d(method,scalem)
 % SWSPECTRAL2D(method,scalem)
 %
-% FIGURE 3.2 of SIMONS & WANG
+% FIGURE 2 of SIMONS & WANG, doi: 10.1007/s13137-011-0016-z
 %
 % Spectral rendition of the 2D-disk tapers scaled on the unit interval.
 %
@@ -13,9 +13,9 @@ function swspectral2d(method,scalem)
 %
 % SEE ALSO:
 %
-% SWSPACE2D, SDWSPACE, SDWSPECTRAL
+% SWDISK, SWSPACE2D, and SDWSPACE, SDWSPECTRAL
 %
-% Last modified by fjsimons-at-alum.mit.edu, 04/14/2009
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Number of tapers per order
 NM=4;
@@ -27,7 +27,7 @@ N=42;
 K=2*sqrt(N);
 % The abscissas - the longer the better the Fourier transform
 x=linspace(0,5,2^12);
-% The method of computation - the only workable option
+% The method of computation - the only workable option here
 method='GL';
 % The method of scaling, if 0 don't do sqrt(x) scaling of Slepian
 defval('scalem',0);
@@ -138,6 +138,7 @@ fig2print(gcf,'portrait')
 % set(gcf,'Color','w','Inv','off')
 shrink(ah,1,1/1.1)
 
+% Do remember that 'GL' was the only workable option
 if strcmp(method,'GL')
   set([pgg(:)],'LineW',0.5)
   q=input('Delete dashed lines? [y] ','s');
