@@ -1,12 +1,11 @@
 function swspace2d(method,scalem)
 % SWSPACE2D(method,scalem)
 %
-% FIGURE 3.1 of SIMONS & WANG, Int. J. Geomath. (2011)
+% FIGURE 1 of SIMONS & WANG, doi: 10.1007/s13137-011-0016-z
 % 
-% Spatial rendition of the radial part of the 2D-disk tapers scaled to
-% the unit interval. Checks that the finite-length effects are not so
-% grave by ensuring that the "small" Fourier components could be "zero"
-% after all.
+% Spatial rendition of the radial part of the 2D Cartesiandisk tapers scaled
+% to the unit interval. Checks that finite-length effects are not so grave
+% by ensuring that the "small" Fourier components could be "zero" after all.
 %
 % INPUT:
 %
@@ -17,9 +16,9 @@ function swspace2d(method,scalem)
 %
 % SEE ALSO:
 %
-% SWDISK, SWSPECTRAL2D, SDWSPACE, SDWSPECTRAL
+% SWDISK, SWSPECTRAL2D, and SDWSPACE, SDWSPECTRAL
 %
-% Last modified by fjsimons-at-alum.mit.edu, 06/25/2018
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % The method of computation
 defval('method','SE');
