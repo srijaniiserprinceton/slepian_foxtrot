@@ -1,7 +1,7 @@
 function swfried2d(method)
 % swfried2d(method)
 %
-% FIGURE 4 of SIMONS & WANG, GEM 2011
+% FIGURE 4 of SIMONS & WANG, GEM 2011, 10.1007/s13137-011-0016-z
 %
 % INPUT:
 %
@@ -9,18 +9,19 @@ function swfried2d(method)
 %          'GL' by direct Gauss-Legendre integration [slow!]
 %          'RS' by direct Riemann summation [slow!]
 %          'compare' by comparison of the methods
+%          'SVD' by operator diagonalization [not ready - see SVDSLEP2/SVDSLEP3]
 %
-% Makes a fried-egg plot for +- angular orders for concentration to a
-% disk-shaped domain. If 'method' is 'GL' The eigenvalues will be ever so
-% slightly different from the "truth" that we know so well - they may not
-% occur exactly in pairs, etc. But overall this is pretty well behaved to
-% a part in a million or so starting from reasonable choice.
+% Makes a "fried-egg" plot for +- angular orders for concentration to a
+% disk-shaped spatial domain. If 'method' is 'GL' the eigenvalues will be
+% ever so slightly different from the "truth" that we know so well - they
+% may not occur exactly in pairs, etc. But overall this is pretty well
+% behaved to a part in a million or so starting from reasonable choice.
 %
 % SEE ALSO:
 %
 % SWVALS2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 03/03/2011
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % eps2png -width 850 swfried2d.eps 
 % convert swfried2d.png swfried2d.gif
@@ -99,6 +100,9 @@ switch method
   % Make the figure - with G/E or GV/EV for comparison
   theG=GV;
   theV=EV;
+ case 'SVD'
+  keyboard
+  % Not finished yet but involves SVDSLEP3
  case 'compare'
   keyboard
   % Not properly written but largely irrelevant now
