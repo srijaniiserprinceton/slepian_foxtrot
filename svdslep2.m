@@ -3,7 +3,7 @@ function varargout=svdslep2(N,R,J,meth,imp,ngro,xver)
 %
 % Explicit/implicit diagonalization of the Slepian concentration operator in
 % two Cartesian dimensions, for SQUARE concentration regions in the SPATIAL
-% domain and circular bandlimitation regions in the SPECTRAL domain.
+% domain and CIRCULAR bandlimitation regions in the SPECTRAL domain.
 %
 % INPUT:
 %
