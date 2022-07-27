@@ -32,7 +32,7 @@ function varargout=svdslep3(XY,KXY,K,tol,ngro)
 %
 % LOCALIZATION2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 07/20/2022
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Default values
 defval('K', 10);
@@ -42,9 +42,9 @@ defval('tol',12);
 
 defval('circn',41)
 
-% Default is a circle in space - need to properly make sure R is a
-% Shannon ratio i.e. the radius of the concentration region in terms of
-% the Nyquist, see SWSVD
+% Default is a circle in space - need to properly make sure R is a Shannon
+% ratio i.e. the radius of the concentration region in terms of the Nyquist,
+% see SWSVD AND SVDSLEP2
 defval('R',30)
 defval('XY',...
        R*[cos(linspace(0,2*pi,circn)) ; sin(linspace(0,2*pi,circn))]')
