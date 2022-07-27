@@ -26,7 +26,7 @@ function varargout=svdslep2(N,R,J,method,imp)
 %
 % EXAMPLE:
 %
-% svdslep2('demo1')
+% svdslep2('demo1') % This takes a good while on a good computer
 %
 % SEE ALSO: SVDSLEP3
 %
