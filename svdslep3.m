@@ -245,16 +245,8 @@ function [Qin,xylimt,QX,QY,XY]=ccheck(XY,dxdy,isk)
 
 % The following was stripped from LOCALIZATION2D 
 
+% In the spectral domain the input curve needs to be doubled
 defval('isk',0)
-
-% Should be roughly compatible with the resolution of the curve but
-% let's say we're going to assume units of km coming in - thus 5 km.
-% Note that the solution is sensitive to the step and the domain size
-if isk==0
-  defval('dxdy',[5 5])
-else
-  defval('dxdy',2*pi./[5 5])
-end
 
 % Make sure the XY of the curve has two columns
 if ~isempty(find(size(XY,2)==2))
@@ -264,7 +256,7 @@ if ~isempty(find(size(XY,2)==2))
 else
   error('Coordinates of the curve not as expected')
 end
-
+keyboard
 % Find limits in x and y so as to contain the curves
 if isk==0
   % We're in x-space
@@ -278,9 +270,10 @@ elseif isk==1
   % Mirror the curve itself
   XY=[XY ; flipud(-XY)];
 end
-
 xrange=xlimt(2)-xlimt(1);
-yrange=ylimt(2)-ylimt(1);
+pyrange=ylimt(2)-ylimt(1);
+
+% Do this for the benefit of the output
 xylimt=[xlimt ylimt];
 
 % Construct a grid with the region inscribed
