@@ -45,8 +45,10 @@ function varargout=svdslep2(N,R,J,meth,imp,ngro,xver)
 % (though with identical eigenvalues and with vast computation speed
 % differences.)
 %
+% NOTE: See inside for RECTANGULAR instead of CIRCULAR bandlimitation
+%
 % Written by Eugene Brevdo and Frederik J Simons, 04/03/2010
-% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
+% Last modified by fjsimons-at-alum.mit.edu, 07/28/2022
 
 % Default values
 defval('N',2^6)
@@ -65,7 +67,7 @@ if ~isstr(N)
   fname=hash([N R J meth imp ngro],'SHA-256');
   fnams=fullfile(getenv('IFILES'),'HASHES',sprintf('%s_%s.mat',upper(mfilename),fname));
 
-  if ~exist(fnams,'file')
+  if ~exist(fnams,'file') | 1==1
     t=tic;
     % Make a larger domain, inflate one size
     Nd=N*ngro;
@@ -111,16 +113,29 @@ if ~isstr(N)
       Qi=@(y) ifft2vec(y);
     end
 
-    % The bandlimiting operator
+    % Prepare the bandlimiting operator
     LI=zeros(Nd);
-
-    % Calculate distance from origin (0,0)
+    % Calculate distance from origin (0,0) when the CORNERS are 1 distant
     [LIx,LIy]=meshgrid(linspace(-1/sqrt(2),1/sqrt(2),Nd));
     LIx=fftshift(LIx); LIy=fftshift(LIy);
-    % Find the elements within radius R of (0,0) (all are within R=1)
+    % Find the elements within RADIUS R of (0,0) (all are within R=1)
     LI=sqrt(LIx.^2 + LIy.^2)<=R;
-    % Draw a box of side length percentage R
-    % LI=(sqrt(2)*abs(LIx)<=R) & (sqrt(2)*abs(LIy)<=R);
+    % This was CIRCULAR bandlimitation, you may try RECTANGULAR
+    defval('recto',0)
+    if recto==1
+      disp('RECTANGULAR SPECTRAL CONCENTRATION')
+      % Draw a BOX of side length percentage R
+      LI=(sqrt(2)*abs(LIx)<=R) & (sqrt(2)*abs(LIy)<=R);
+    else
+      disp('CIRCULAR SPECTRAL CONCENTRATION')
+    end
+    
+    if xver==1
+      disp('Check the concentration region')
+      imagesc(LI); axis image
+      disp(sprintf('\nHit ENTER to proceed\n'))
+      pause
+    end
 
     if imp==0
       % Projection operator built from image mask
@@ -263,24 +278,27 @@ elseif strcmp(N,'demo1')
   % but if you don't specify anything it's IMPLICIT
   defval('R',[]); imp=R; defval('imp',1)
   % Force the size of the square in this example
-  N=2^6;
+  N=2^5;
   % Force the excessive checking in this example
   xver=1;
-  % Run it!$
+  % Run it with everything else defaulted
   [E,V,SE,N,R,J,meth,imp,ngro,ortho]=svdslep2(N,[],[],[],imp,[],xver);
-                                              
+
+  % Know what you're getting
+  N
+  R
   % Check out these eigenvalues - with imp=0 get some funny degeneracies
   % even for the square case!
-  N
   V
+  % Watch over orthgonality which isn't going to be perfect
   ortho
   
   % Make the plot %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   clf
   [ah,ha]=krijetem(subnum(2,3));
-
   for ind=1:3
     axes(ah(ind))
+    % This is in pixels
     imagesc(v2s(E(:,ind)))
     axis image
     set(ah(ind),'xtick',[1 N],'xlim',[1 N],...
