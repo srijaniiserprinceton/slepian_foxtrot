@@ -53,10 +53,10 @@ else
   % The output of this is now in km and thus the area in square kilometers
   [X,Y]=mfwdtran(M,lola(:,2),lola(:,1));
   % Localize around the region with all the defaults
-  [G,H,V,K,XYP,XY,A,c11,cmn]=localization2D([X Y],N,J);
+  [G,H,V,K,XYP,XY,A,c11,cmn]=localization2D([X Y],N,J,[],[],[],[5 5]);
   % Could check the area again
-  disp(sprintf('Area determined on sphere   %8.0f km^2',...
-	       A2*(fralmanac('Radius')/1000)^2))
+%   disp(sprintf('Area determined on sphere   %8.0f km^2',...
+% 	       A2*(fralmanac('Radius')/1000)^2))
   disp(sprintf('Area on projected ellipsoid %8.0f km^2',A))
   save(fname,'G','H','V','K','XYP','XY','A','c11','cmn')
 end
