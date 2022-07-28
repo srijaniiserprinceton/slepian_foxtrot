@@ -3,7 +3,7 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 % 
 % Calculates spatiospectrally concentrated Slepian functions in the
 % two-dimensional Cartesian plane at the desired spatial points, for an
-% arbitrarily shaped region in space, and for circular bandlimitation as per
+% ARBITRARILY shaped region in space, and for CIRCULAR bandlimitation as per
 % the specified Shannon number. These are windows to be applied to certain
 % data of which you know the specific coordinates or the x and y
 % spacings. If you don't, put in a reasonable sampling interval in km.
@@ -50,7 +50,7 @@ function varargout=localization2D(XY,N,J,method,Nqx,Nqy,dxdy,XYP)
 %
 % SEE ALSO:
 %
-% SWDISK, KERNELC2D, LOCALIZATION, KERNELC, DEVILLIERS
+% KERNELC2D, SWDISK, LOCALIZATION, KERNELC, DEVILLIERS
 %
 % Last modified by dongwang-at-princeton.edu, 05/14/2010
 % Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
