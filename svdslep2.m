@@ -51,7 +51,7 @@ function varargout=svdslep2(N,R,J,meth,imp,ngro,xver)
 % Last modified by fjsimons-at-alum.mit.edu, 07/28/2022
 
 % Default values
-defval('N',2^6)
+defval('N',2^5)
 
 if ~isstr(N)
   defval('R',.1);
@@ -121,7 +121,7 @@ if ~isstr(N)
     % Find the elements within RADIUS R of (0,0) (all are within R=1)
     LI=sqrt(LIx.^2 + LIy.^2)<=R;
     % This was CIRCULAR bandlimitation, you may try RECTANGULAR
-    defval('recto',0)
+    defval('recto',1)
     if recto==1
       disp('RECTANGULAR SPECTRAL CONCENTRATION')
       % Draw a BOX of side length percentage R
