@@ -1,14 +1,13 @@
 function swfried2d(method)
 % swfried2d(method)
 %
-% FIGURE 4 of SIMONS & WANG, GEM 2011, 10.1007/s13137-011-0016-z
+% FIGURE 4 of SIMONS & WANG, doi: 10.1007/s13137-011-0016-z
 %
 % INPUT:
 %
 % method   'SE' by Slepian "extension" [faster!]
 %          'GL' by direct Gauss-Legendre integration [slow!]
 %          'RS' by direct Riemann summation [slow!]
-%          'compare' by comparison of the methods
 %          'SVD' by operator diagonalization [not ready - see SVDSLEP2/SVDSLEP3]
 %
 % Makes a "fried-egg" plot for +- angular orders for concentration to a
@@ -40,7 +39,7 @@ XY=[cos(linspace(0,2*pi,circn)) ; sin(linspace(0,2*pi,circn))]';
 mdis=mean(sum(sqrt(diff(XY).^2),2));
 
 % Perform the localization
-N=42; % The Shannon number 
+N=42; % The Shannon number, the sum of the eigenvalues
 J=30; % The number of Slepian functions that will be calculated
 
 % Define the (resolution of the) output grid
@@ -53,7 +52,7 @@ XYP=[XP(:) YP(:)];
 % Now do the actual calculation
 switch method
   case {'GL','RS'}
-   % This returns all of the numerical eigenvalus
+   % This returns all of the numerical eigenvalues
    [G,H,V,K,XYP,XY,A]=localization2D(XY,N,J,method,[],[],[],XYP);
    G=reshape(G,2^j,2^j,J);
  
@@ -102,14 +101,8 @@ switch method
   theV=EV;
  case 'SVD'
   keyboard
+  [E,V,SE]=svdslep2(N,R,J,method,imp);
   % Not finished yet but involves SVDSLEP3
- case 'compare'
-  keyboard
-  % Not properly written but largely irrelevant now
-  % Check how close these eigenvalues are now
-  difer(EV-V,4)
-  % Also compare the eigenfunctions and make sure that the normalization
-  % is identical in both cases.
 end
   
 % They should differ slightly - in the sign - in the phase
@@ -119,7 +112,8 @@ clf
 c11=[min(XYP(:,1)) max(XYP(:,2))];
 cmn=[max(XYP(:,1)) min(XYP(:,1))];
 
-defval('bw',1)
+% Black and white if you so desire
+defval('bw',0)
 
 for index=1:length(ah)
   axes(ah(index))
@@ -136,9 +130,11 @@ for index=1:length(ah)
   plot(c11([1 2 2 1 1]),cmn([1 1 2 2 1]),'k-')
   switch method
    case {'GL','RS'}
+    % There is no more notion of an "order"
     tl(index)=title(sprintf('%s_{%i} = %9.6f','\lambda',...
 			    index,theV(index)));
    case 'SE'
+    % The orders remain identifiable and the pairs are rotated identicals
     tl(index)=title(sprintf('%s_{%i} = %9.6f ; m = %i',...
 			    '\lambda',...
 			    index,theV(index),...
