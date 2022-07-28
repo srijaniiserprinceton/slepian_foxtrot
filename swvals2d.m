@@ -1,7 +1,7 @@
 function swvals2d
 % SWVALS2D
 % 
-% FIGURE 3 of SIMONS & WANG
+% FIGURE 3 of SIMONS & WANG, doi: 10.1007/s13137-011-0016-z
 %
 % Makes a plot of the eigenvalues of the concentration problem to the
 % Cartesian disk while differentiating the orders.
@@ -10,7 +10,7 @@ function swvals2d
 %
 % SWFRIED2D, SDWVALS
 %
-% Last modified by fjsimons-at-alum.mit.edu, 04/24/2009
+% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
 
 % Prepare for plotting
 clf
