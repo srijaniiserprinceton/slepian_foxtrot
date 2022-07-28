@@ -278,7 +278,7 @@ elseif strcmp(N,'demo1')
   % but if you don't specify anything it's IMPLICIT
   defval('R',[]); imp=R; defval('imp',1)
   % Force the size of the square in this example
-  N=2^5;
+  N=2^6;
   % Force the excessive checking in this example
   xver=1;
   % Run it with everything else defaulted
