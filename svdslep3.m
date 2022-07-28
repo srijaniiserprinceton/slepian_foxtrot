@@ -1,5 +1,5 @@
-function varargout=svdslep3(XY,KXY,J,tol,ngro)
-% [E,V,c11cmnR,c11cmnK,SE,KXY]=SVDSLEP3(XY,KXY,J,tol,ngro)
+function varargout=svdslep3(XY,KXY,J,tol,ngro,xver)
+% [E,V,c11cmnR,c11cmnK,SE,KXY]=SVDSLEP3(XY,KXY,J,tol,ngro,xver)
 %
 % Two-dimensional Slepian functions with arbitrary concentration/limiting
 % regions in the Cartesian spatial and (half-)spectral domains.
@@ -12,8 +12,10 @@ function varargout=svdslep3(XY,KXY,J,tol,ngro)
 %          For various reasons the "curve" is not the boundary but rather
 %          the last set of "elements" on the "grid".
 % J        Number of eigentapers [default: 10]
-% tol      abs(log10(tolerance)) for EIGS in SVDSLEP3 
-% ngro     The "growth factor" determining the size of the computation domain
+% tol      abs(log10(tolerance)) for EIGS [default: 12]
+% ngro     The computational "growth factor" [default: 8]
+% xver     Performs excessive verification [default: 0]
+
 %
 % OUTPUT:
 %
@@ -32,50 +34,57 @@ function varargout=svdslep3(XY,KXY,J,tol,ngro)
 %
 % LOCALIZATION2D
 %
-% Last modified by fjsimons-at-alum.mit.edu, 07/27/2022
+% Last modified by fjsimons-at-alum.mit.edu, 07/28/2022
 
 % Default values
 defval('J', 10);
 defval('ngro',3);
-defval('xver',0);
+defval('xver',1);
 defval('tol',12);
 
-defval('circn',41)
-
-% Default is a circle in space - need to properly make sure R is a Shannon
-% ratio i.e. the radius of the concentration region in terms of the Nyquist,
-% see SWSVD AND SVDSLEP2
-defval('R',30)
+% Default curve is a CIRCLE in pixel space, of some radius and pixelization
+defval('cR',30)
+defval('cN',41)
 defval('XY',...
-       R*[cos(linspace(0,2*pi,circn)) ; sin(linspace(0,2*pi,circn))]')
-% And a halfsquare in spectral space
+       cR*[cos(linspace(0,2*pi,cN)) ; sin(linspace(0,2*pi,cN))]')
+% And some (half-)square in the spectral (half-)space
+% Here you use the notion of the Shannon ratio as in SVDSLEP2, which is
+% relative to the grown area and has unit values in the CORNERS
+defval('R',0.1)
 defval('KXY',...
-       sqrt(pi*R^2)/2*...
-       [-1 1  1 -1 -1; ...
-	 1 1  0  0  1]')
+       R*[-1 1  1 -1 -1; 1 1  0  0  1]')
 
 if ~isstr(XY)
   % Check the curves and return the range on the inside 
-  % For the spatial part
+  % For the SPATIAL part
   [QinR,xylimt,QX,QY]=ccheck(XY);
-  % For the spectral part - including the mirrored symmetry
+  % For the SPECTRAL part - including the mirrored symmetry
   [QinK,kxylimt,QXK,QYK,KXY]=ccheck(KXY,[],1);
   
   % Check if you must
   if xver==1
     clf
+    % Plot the SPATIAL region of interest exactly as input
     subplot(221)
-    plot(XY(:,1),XY(:,2)); hold on
+    plot(XY(:,1),XY(:,2),'b'); hold on
+    % Compute the centroid - my function is from SAGA, but R2022a has its own
     [X0,Y0]=centroid(XY(:,1),XY(:,2));
-    plot(X0,Y0,'r+')
+    plot(X0,Y0,'b+')
     axis equal
-    axis([-R R -R R]*1.5)
+    xlim(minmax(XY(:))*1.5)
+    ylim(minmax(XY(:))*1.5)
+
+    % Plot the SPECTRAL region of interest exactly as input
     subplot(222)
-    plot(KXY(:,1),KXY(:,2)); hold on
-    [X0,Y0]=centroid(KXY(:,1),KXY(:,2));
-    plot(X0,Y0,'r+')
+    plot(KXY(:,1),KXY(:,2),'r'); hold on
+    % Compute the centroid - my function is from SAGA, but R2022a has its own
+    [KX0,KY0]=centroid(KXY(:,1),KXY(:,2));
+    plot(KX0,KY0,'r+')
     axis equal
-    axis([-R R -R R]*1.5)
+    axis([-1 1 -1 1]/sqrt(2))
+
+keyboard
+
     subplot(223)
     dom=zeros(size(QX)); dom(QinR)=1; spy(dom)
     axis ij
@@ -177,16 +186,18 @@ elseif strcmp(XY,'demo1')
   [E,V,c11cmnR,c11cmnK,SE,KXY]=svdslep3(XY,KXY,J);
   
   % Quick fix
-  c11=[];
-  cmn=[];
+  c11=c11cmnR(1:2);
+  cmn=c11cmnR(3:4);
 
-  % Make the figure
+  % Make the figures
   offs=0;
+
   figure(1)
   clf
   [ah,ha]=krijetem(subnum(2,3));
   for ind=1:3
     axes(ah(ind))
+    % This is in actual units
     imagefnan(c11,cmn,v2s(E(:,ind+offs)))
     hold on
     plot(XY(:,1),XY(:,2),'k'); hold off
@@ -217,19 +228,22 @@ elseif strcmp(XY,'demo1')
   axis([c11(1) cmn(1) cmn(2) c11(2)]/4)
   hold on
   plot(KXY(:,1),KXY(:,2),'k'); hold off
-  fig2print(gcf,'landscape')
 
   % Also try this one here
   figure(3)
   clf
   plot(V,'o-')
   title(sprintf('sum of the eigenvalues %8.3f',sum(V)))
+  longticks(gca,2)
+  ylim([-0.1 1.1])
+  grid on
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [Qin,xylimt,QX,QY,XY]=ccheck(XY,dxdy,isk)
-% I think this needs ngro acknowledged
-% The following is stripped quite literally from LOCALIZATION2D 
+% Given coordinates of a closed curve XY, computes
+
+% The following was stripped from LOCALIZATION2D 
 
 defval('isk',0)
 
