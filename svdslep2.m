@@ -17,8 +17,8 @@ function varargout=svdslep2(N,R,J,meth,imp,ngro,xver)
 %         5 Using the power method for the largest eigenvalue
 % imp     1 Uses the implicit operator method [default]
 %         0 Doesn't 
-% ngro    The computational "growth" factor
-% xver    Performs excessive verification
+% ngro    The computational "growth" factor [default: 8]
+% xver    Performs excessive verification [default: 0]
 %
 % OUTPUT:
 %
@@ -35,8 +35,8 @@ function varargout=svdslep2(N,R,J,meth,imp,ngro,xver)
 % 
 % EXAMPLE:
 %
-% svdslep2('demo1') 
-% This takes an hour or two on Intel(R)% Xeon(R) CPU X5677  @ 3.47GHz
+% svdslep2('demo1') % For N=2^6, imp=1 and ngro=8, this takes 98.5 minutes
+% on an Intel(R)% Xeon(R) CPU X5677 @ 3.47GHz processor (lemaitre)
 %
 % SEE ALSO: SVDSLEP3
 %
@@ -264,7 +264,10 @@ elseif strcmp(N,'demo1')
   defval('R',[]); imp=R; defval('imp',1)
   % Force the size of the square in this example
   N=2^6;
-  [E,V,SE,N,R,J,meth,imp,ngro,ortho]=svdslep2(N,[],[],[],imp,[],1);
+  % Force the excessive checking in this example
+  xver=1;
+  % Run it!$
+  [E,V,SE,N,R,J,meth,imp,ngro,ortho]=svdslep2(N,[],[],[],imp,[],xver);
                                               
   % Check out these eigenvalues - with imp=0 get some funny degeneracies
   % even for the square case!
